@@ -1,0 +1,5 @@
+port: 8000
+max_body_size_bytes: 204800
+aws_client_timeout_seconds: 30
+queue_urls:
+  - https://sqs.us-east-1.amazonaws.com/111111111111/gomail-mails
