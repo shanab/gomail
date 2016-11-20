@@ -3,17 +3,16 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
-	"time"
 
 	"gopkg.in/yaml.v2"
 )
 
 type Config struct {
-	Port                    int           `yaml:"port"`
-	MaxBodySizeBytes        int64         `yaml:"max_body_size_bytes"`
-	AwsClientTimeoutSeconds time.Duration `yaml:"aws_client_timeout_seconds"`
-	AccessLogFilePath       string        `yaml:"access_log_file_path"`
-	QueueUrls               []string      `yaml:"queue_urls"`
+	Port                    int      `yaml:"port"`
+	MaxBodySizeBytes        int64    `yaml:"max_body_size_bytes"`
+	AwsClientTimeoutSeconds int64    `yaml:"aws_client_timeout_seconds"`
+	AccessLogFilePath       string   `yaml:"access_log_file_path"`
+	QueueUrls               []string `yaml:"queue_urls"`
 }
 
 func (c Config) validate() error {
