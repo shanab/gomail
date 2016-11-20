@@ -1,0 +1,6 @@
+aws_client_timeout_seconds: 30
+minimum_iteration_duration_milliseconds: 5000
+healthy_threshold: 6
+unhealthy_threshold: 2
+queue_urls:
+  - https://sqs.us-east-1.amazonaws.com/691610436071/gomail-mails
