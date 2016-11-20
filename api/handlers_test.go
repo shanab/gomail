@@ -10,29 +10,16 @@ import (
 	"gomail/awsmock"
 
 	"github.com/aws/aws-sdk-go/aws/awserr"
-	"github.com/aws/aws-sdk-go/service/sqs/sqsiface"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/suite"
 )
 
 type ApiSuite struct {
 	suite.Suite
-	tmpConfig    *Config
-	tmpSqsHandle sqsiface.SQSAPI
 }
 
 func TestApiSuite(t *testing.T) {
 	suite.Run(t, new(ApiSuite))
-}
-
-func (s *ApiSuite) SetupTest() {
-	s.tmpConfig = config
-	s.tmpSqsHandle = sqsClient
-}
-
-func (s *ApiSuite) TearDownTest() {
-	config = s.tmpConfig
-	sqsClient = s.tmpSqsHandle
 }
 
 func (s *ApiSuite) TestSendEmail() {

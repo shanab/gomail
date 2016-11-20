@@ -33,7 +33,7 @@ func parseFlags() {
 	flag.Parse()
 }
 
-func init() {
+func main() {
 	// parse -config flag (if any)
 	parseFlags()
 
@@ -50,10 +50,7 @@ func init() {
 	awsSession := session.New(awsConfig)
 	sqsClient = sqs.New(awsSession)
 	sesClient = ses.New(awsSession)
-}
 
-func main() {
 	pipeline := NewPipeline()
-
 	pipeline.Run()
 }
