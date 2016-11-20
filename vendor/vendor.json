@@ -129,6 +129,24 @@
 			"revisionTime": "2016-11-11T02:00:00Z"
 		},
 		{
+			"checksumSHA1": "Eo9yODN5U99BK0pMzoqnBm7PCrY=",
+			"path": "github.com/aws/aws-sdk-go/private/waiter",
+			"revision": "a0a042689f81e61e24b16237b502bcbc4a05dfc0",
+			"revisionTime": "2016-11-18T23:18:23Z"
+		},
+		{
+			"checksumSHA1": "6TbKrx2keOneistnAS39cVXTunY=",
+			"path": "github.com/aws/aws-sdk-go/service/ses",
+			"revision": "a0a042689f81e61e24b16237b502bcbc4a05dfc0",
+			"revisionTime": "2016-11-18T23:18:23Z"
+		},
+		{
+			"checksumSHA1": "MmMhIXXWwqxELiRURCZVZNdNsnc=",
+			"path": "github.com/aws/aws-sdk-go/service/ses/sesiface",
+			"revision": "a0a042689f81e61e24b16237b502bcbc4a05dfc0",
+			"revisionTime": "2016-11-18T23:18:23Z"
+		},
+		{
 			"checksumSHA1": "wijkg0QAM0Yzr3WUMIzAtDdph40=",
 			"path": "github.com/aws/aws-sdk-go/service/sqs",
 			"revision": "5b341290c488aa6bd76b335d819b4a68516ec3ab",
@@ -187,6 +205,24 @@
 			"path": "github.com/pmezard/go-difflib/difflib",
 			"revision": "792786c7400a136282c1664665ae0a8db921c6c2",
 			"revisionTime": "2016-01-10T10:55:54Z"
+		},
+		{
+			"checksumSHA1": "2maWQ1yZbk4iipKQmxpb447hxSA=",
+			"path": "github.com/sendgrid/rest",
+			"revision": "3ec51b4f1754e13e92409355851a0a82e9a06461",
+			"revisionTime": "2016-10-14T18:48:02Z"
+		},
+		{
+			"checksumSHA1": "028WGCCcsm0bEq6NhpF/bf37Ro0=",
+			"path": "github.com/sendgrid/sendgrid-go",
+			"revision": "d087004b4d47c2a378ade9eb3957571114b91493",
+			"revisionTime": "2016-11-08T23:34:08Z"
+		},
+		{
+			"checksumSHA1": "69178/wsna2SAuhDRhY6NIIfJg0=",
+			"path": "github.com/sendgrid/sendgrid-go/helpers/mail",
+			"revision": "d087004b4d47c2a378ade9eb3957571114b91493",
+			"revisionTime": "2016-11-08T23:34:08Z"
 		},
 		{
 			"checksumSHA1": "K0crHygPTP42i1nLKWphSlvOQJw=",
