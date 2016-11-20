@@ -235,6 +235,7 @@ func deleteFromQueue(message *Message) error {
 		ReceiptHandle: message.Message.ReceiptHandle,
 	})
 	if err != nil {
+		log.Print("[ERROR] Could not delete message from queue: %v", err.Error())
 		return err
 	}
 	return nil
@@ -247,6 +248,7 @@ func returnToQueue(message *Message) error {
 		VisibilityTimeout: aws.Int64(0),
 	})
 	if err != nil {
+		log.Print("[ERROR] Could not set visibility timeout to zero: %v", err.Error())
 		return err
 	}
 	return nil

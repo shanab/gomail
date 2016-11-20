@@ -68,5 +68,9 @@ func (w *SendgridWorker) send(message *Message, status chan<- bool) {
 		log.Print("[ERROR] Sendgrid: Could not send email: %v", err.Error())
 		returnToQueue(message)
 		status <- false
+		return
 	}
+
+	deleteFromQueue(message)
+	status <- true
 }

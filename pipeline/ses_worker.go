@@ -52,10 +52,13 @@ func (w *SESWorker) send(message *Message, status chan<- bool) {
 			},
 		},
 	})
-
 	if err != nil {
 		log.Print("[ERROR] SES: Could not send email: %v", err.Error())
 		returnToQueue(message)
 		status <- false
+		return
 	}
+
+	deleteFromQueue(message)
+	status <- true
 }
