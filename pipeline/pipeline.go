@@ -26,6 +26,26 @@ type Email struct {
 	Body      string `json:"body"`
 }
 
+func (e Email) From() string {
+	return fmt.Sprintf("%s <%s>", e.FromName, e.FromEmail)
+}
+
+func (e Email) To() string {
+	return fmt.Sprintf("%s <%s>", e.ToName, e.ToEmail)
+}
+
+type Message struct {
+	Message  *sqs.Message
+	QueueUrl string
+}
+
+func NewMessage(message *sqs.Message, queueUrl string) *Message {
+	return &Message{
+		Message:  message,
+		QueueUrl: queueUrl,
+	}
+}
+
 type Worker interface {
 	Send(emails []string, failures chan<- int)
 }
@@ -71,8 +91,8 @@ type Pipeline struct {
 	SESWorker      *SESWorker
 }
 
-func Read() []*sqs.Message {
-	messages := make([]*sqs.Message, 0)
+func Read() []*Message {
+	messages := make([]*Message, 0)
 	messagesC := make(chan *sqs.Message)
 	var wg sync.WaitGroup
 
@@ -106,7 +126,7 @@ func Read() []*sqs.Message {
 		wg.Wait()
 
 		for message := range messagesC {
-			messages = append(messages, message)
+			messages = append(messages, NewMessage(message, queueUrl))
 		}
 	}
 
@@ -141,10 +161,12 @@ func messageToEmail(message *sqs.Message) (*Email, error) {
 }
 
 func (p *Pipeline) Run() error {
+	sendgridFailures := make(chan int)
+	sesFailures := make(chan int)
 	for {
 		t := time.Now()
 		messages := Read()
-		p.run(messages)
+		p.run(messages, sendgridFailures, sesFailures)
 
 		minIterDuration := time.Duration(config.MinimumIterationDurationMilliseconds) * time.Millisecond
 		took := time.Since(t)
@@ -156,16 +178,13 @@ func (p *Pipeline) Run() error {
 	return fmt.Errorf("Execution stopped unexpectedly")
 }
 
-func (p *Pipeline) run(messages []*sqs.Message) {
+func (p *Pipeline) run(messages []*Message, sendgridFailures, sesFailures chan int) {
 	// Break early if no messages read
 	if len(messages) == 0 {
 		return
 	}
 
-	sendgridFailures := make(chan int)
-	sesFailures := make(chan int)
 	splitPoint := p.calculateSplitPoint(len(messages))
-
 	sendgridMessages := messages[splitPoint:]
 	sesMessages := messages[:splitPoint]
 	runningWorkers := 0
@@ -208,4 +227,27 @@ func (p *Pipeline) calculateSplitPoint(size int) int {
 	default: // p.SESWorker.isHealthy
 		return size - 1
 	}
+}
+
+func deleteFromQueue(message *Message) error {
+	_, err := sqsClient.DeleteMessage(&sqs.DeleteMessageInput{
+		QueueUrl:      &message.QueueUrl,
+		ReceiptHandle: message.Message.ReceiptHandle,
+	})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func returnToQueue(message *Message) error {
+	_, err := sqsClient.ChangeMessageVisibility(&sqs.ChangeMessageVisibilityInput{
+		QueueUrl:          &message.QueueUrl,
+		ReceiptHandle:     message.Message.ReceiptHandle,
+		VisibilityTimeout: aws.Int64(0),
+	})
+	if err != nil {
+		return err
+	}
+	return nil
 }
