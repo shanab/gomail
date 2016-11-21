@@ -76,7 +76,6 @@ func validateEmail(fieldName, email string) (bool, string) {
 }
 
 func respondWithError(w http.ResponseWriter, respErr *ResponseError, httpStatus int) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(httpStatus)
 	errorBytes, err := json.Marshal(respErr)
@@ -136,7 +135,6 @@ func SendEmailHandler(w http.ResponseWriter, r *http.Request) {
 		panic("Could not marshal response: " + err.Error())
 	}
 
-	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(respBytes)
 }

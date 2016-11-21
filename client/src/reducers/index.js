@@ -10,7 +10,8 @@ const emails = (state = initialState, action) => {
     case SUBMIT_EMAIL_REQUEST:
       return {
         ...state,
-        isSubmittingEmail: true
+        isSubmittingEmail: true,
+        errors: null
       }
     case SUBMIT_EMAIL_RESPONSE:
       return {

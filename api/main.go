@@ -72,10 +72,19 @@ func main() {
 		fatal("Could not listen to port:", err)
 	}
 
+	corsAllowedHeaders := []string{"Content-Type"}
+	corsAllowedMethods := []string{"PUT"}
+	corsAllowedOrigins := []string{"*"}
 	listenerClosed := make(chan struct{})
 	go func() {
 		// start serving
-		http.Serve(l, handlers.CORS()(loggedRouter))
+		http.Serve(
+			l,
+			handlers.CORS(
+				handlers.AllowedHeaders(corsAllowedHeaders),
+				handlers.AllowedMethods(corsAllowedMethods),
+				handlers.AllowedOrigins(corsAllowedOrigins),
+			)(loggedRouter))
 		// done serving, signal listener closed
 		listenerClosed <- struct{}{}
 	}()
