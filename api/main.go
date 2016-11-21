@@ -73,7 +73,7 @@ func main() {
 	}
 
 	corsAllowedHeaders := []string{"Content-Type"}
-	corsAllowedMethods := []string{"PUT"}
+	corsAllowedMethods := []string{"POST"}
 	corsAllowedOrigins := []string{"*"}
 	listenerClosed := make(chan struct{})
 	go func() {

@@ -37,6 +37,6 @@ export const submitEmail = payload => dispatch => {
 
   const success = (response) => dispatch(submitEmailResponse({ email: response.data.email }))
   const failure = (err) => dispatch(submitEmailError({ errors: normalizeErrors(err) }))
-  return API.put('/email/send', { email: payload })
+  return API.post('/email/send', { email: payload })
     .then(success, failure)
 }
