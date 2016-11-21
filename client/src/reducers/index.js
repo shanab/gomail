@@ -28,7 +28,7 @@ const emails = (state = initialState, action) => {
         ...state,
         isSubmittingEmail: false,
         errors: action.payload.errors,
-        showSuccess: true
+        showSuccess: false,
       }
     default:
       return state
