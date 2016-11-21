@@ -32,11 +32,23 @@ class EmailForm extends Component {
       null
   }
 
+  renderSuccessMessage() {
+    const { showSuccess } = this.props
+    return showSuccess ?
+      (
+        <div className="alert alert-success">
+          Email successfully sent!
+        </div>
+      ) :
+      null
+  }
+
   render() {
     const { errors } = this.props
     return (
       <div className="send-email">
         {this.renderBaseError()}
+        {this.renderSuccessMessage()}
         <div className="form-horizontal">
           <FieldWithErrors errors={errors} id="fromName" label="From Name">
             <input type="text" className="form-control" name="fromName" id="fromName" value={this.state.fromName} onChange={this.handleChange} />

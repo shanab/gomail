@@ -4,6 +4,7 @@ import EmailForm from '../components/EmailForm'
 
 const mapStateToProps = (state) => ({
   errors: state.errors,
+  showSuccess: state.showSuccess,
   // Not really using messageId nor isSubmittingEmail for now
   messageId: state.messageId,
   isSubmittingEmail: state.isSubmittingEmail,
