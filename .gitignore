@@ -1,2 +1,7 @@
 *.log*
 config.yaml
+client/node_modules
+client/build
+.DS_Store
+.env
+npm-debug.log

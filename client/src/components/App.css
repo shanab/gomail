@@ -1,0 +1,9 @@
+body {
+  padding-top: 50px;
+  padding-bottom: 50px;
+  background-color: #eee;
+}
+
+.send-email {
+  padding: 40px 15px;
+}
