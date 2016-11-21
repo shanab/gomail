@@ -54,13 +54,13 @@ class EmailForm extends Component {
             <input type="text" className="form-control" name="fromName" id="fromName" value={this.state.fromName} onChange={this.handleChange} />
           </FieldWithErrors>
           <FieldWithErrors errors={errors} id="fromEmail" label="From Email">
-            <input type="email" className="form-control" name="fromEmail" id="fromEmail" value={this.state.fromEmail} onChange={this.handleChange} />
+            <input type="text" className="form-control" name="fromEmail" id="fromEmail" value={this.state.fromEmail} onChange={this.handleChange} />
           </FieldWithErrors>
           <FieldWithErrors errors={errors} id="toName" label="To Name">
             <input type="text" className="form-control" name="toName" id="toName" value={this.state.toName} onChange={this.handleChange} />
           </FieldWithErrors>
           <FieldWithErrors errors={errors} id="toEmail" label="To Email">
-            <input type="email" className="form-control" name="toEmail" id="toEmail" value={this.state.toEmail} onChange={this.handleChange} />
+            <input type="text" className="form-control" name="toEmail" id="toEmail" value={this.state.toEmail} onChange={this.handleChange} />
           </FieldWithErrors>
           <FieldWithErrors errors={errors} id="subject" label="Subject">
             <input type="text" className="form-control" name="subject" id="subject" value={this.state.subject} onChange={this.handleChange} />
