@@ -46,7 +46,8 @@ func main() {
 
 	// initialize sqs & ses clients
 	awsConfig := aws.NewConfig().
-		WithHTTPClient(&http.Client{Timeout: time.Duration(config.AwsClientTimeoutSeconds) * time.Second})
+		WithHTTPClient(&http.Client{Timeout: time.Duration(config.AwsClientTimeoutSeconds) * time.Second}).
+		WithRegion(config.AwsRegion)
 	awsSession := session.New(awsConfig)
 	sqsClient = sqs.New(awsSession)
 	sesClient = ses.New(awsSession)

@@ -1,3 +1,4 @@
+aws_region: us-east-1
 aws_client_timeout_seconds: 30
 minimum_iteration_duration_milliseconds: 5000
 healthy_threshold: 6

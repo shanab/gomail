@@ -8,6 +8,7 @@ import (
 )
 
 type Config struct {
+	AwsRegion                            string   `yaml:"aws_region"`
 	AwsClientTimeoutSeconds              int64    `yaml:"aws_client_timeout_seconds"`
 	MinimumIterationDurationMilliseconds int64    `yaml:"minimum_iteration_duration_milliseconds"`
 	HealthyThreshold                     int      `yaml:"healthy_threshold"`
@@ -16,6 +17,10 @@ type Config struct {
 }
 
 func (c Config) validate() error {
+	if c.AwsRegion == "" {
+		return fmt.Errorf("aws_region is missing")
+	}
+
 	if len(c.QueueUrls) == 0 {
 		return fmt.Errorf("queue_urls must contain at least one value")
 	}

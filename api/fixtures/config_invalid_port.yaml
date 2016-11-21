@@ -1,6 +1,7 @@
 port: -10
 max_body_size_bytes: 204800
 aws_client_timeout_seconds: 30
+aws_region: us-east-1
 access_log_file_path: access.log
 queue_urls:
   - https://sqs.us-east-1.amazonaws.com/111111111111/gomail-mails

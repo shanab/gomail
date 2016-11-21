@@ -1,5 +1,6 @@
 port: 8000
 max_body_size_bytes: 204800
+aws_region: us-east-1
 aws_client_timeout_seconds: 30
 access_log_file_path: access.log
 queue_urls:

@@ -52,6 +52,11 @@ func (s *ConfigSuite) TestConfig() {
 			FilePath:      "fixtures/config_empty_queue_urls.yaml",
 			ExpectedError: fmt.Errorf("queue_urls must contain at least one value"),
 		},
+		{
+			Case:          "Missing AWS Region",
+			FilePath:      "fixtures/config_missing_aws_region.yaml",
+			ExpectedError: fmt.Errorf("aws_region is missing"),
+		},
 	}
 
 	for _, testCase := range testCases {

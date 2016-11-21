@@ -10,6 +10,7 @@ import (
 type Config struct {
 	Port                    int      `yaml:"port"`
 	MaxBodySizeBytes        int64    `yaml:"max_body_size_bytes"`
+	AwsRegion               string   `yaml:"aws_region"`
 	AwsClientTimeoutSeconds int64    `yaml:"aws_client_timeout_seconds"`
 	AccessLogFilePath       string   `yaml:"access_log_file_path"`
 	QueueUrls               []string `yaml:"queue_urls"`
@@ -21,6 +22,9 @@ func (c Config) validate() error {
 	}
 	if c.MaxBodySizeBytes < 0 {
 		return fmt.Errorf("max_body_size_bytes is invalid")
+	}
+	if c.AwsRegion == "" {
+		return fmt.Errorf("aws_region is missing")
 	}
 	if c.AccessLogFilePath == "" {
 		return fmt.Errorf("access_log_file_path is missing")
