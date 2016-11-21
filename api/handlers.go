@@ -91,7 +91,7 @@ func respondWithError(w http.ResponseWriter, respErr *ResponseError, httpStatus 
 func SendEmailHandler(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(io.LimitReader(r.Body, config.MaxBodySizeBytes))
 	if err != nil {
-		log.Print("[REQUEST ERROR] Could not read body: %v", err.Error())
+		log.Print("[REQUEST ERROR] Could not read body: ", err.Error())
 		respondWithError(w, NewBaseResponseError("Could not read body"), http.StatusBadRequest)
 		return
 	}
@@ -99,13 +99,13 @@ func SendEmailHandler(w http.ResponseWriter, r *http.Request) {
 
 	var request SendEmailRequest
 	if err := json.Unmarshal(body, &request); err != nil {
-		log.Print("[REQUEST ERROR] Could not decode JSON body: %v", err.Error())
+		log.Print("[REQUEST ERROR] Could not decode JSON body: ", err.Error())
 		respondWithError(w, NewBaseResponseError("Could not decode JSON body"), http.StatusBadRequest)
 		return
 	}
 	email := request.Email
 	if valid, respErr := email.Validate(); !valid {
-		log.Print("[REQUEST ERROR] Email is invalid: %v", email)
+		log.Print("[REQUEST ERROR] Email is invalid: ", email)
 		respondWithError(w, respErr, http.StatusUnprocessableEntity)
 		return
 	}
@@ -120,7 +120,7 @@ func SendEmailHandler(w http.ResponseWriter, r *http.Request) {
 	})
 	if err != nil {
 		if awsErr, ok := err.(awserr.Error); ok && awsErr.Code() == invalidContent {
-			log.Print("[REQUEST ERROR] Invalid content in body: %v", err.Error())
+			log.Print("[REQUEST ERROR] Invalid content in body: ", err.Error())
 			respondWithError(
 				w,
 				NewBaseResponseError("Body contains characters outside the allowed set"),
@@ -128,7 +128,7 @@ func SendEmailHandler(w http.ResponseWriter, r *http.Request) {
 			)
 			return
 		} else {
-			log.Print("[REQUEST ERROR] SQS service returned an error: %v", err.Error())
+			log.Print("[REQUEST ERROR] SQS service returned an error: ", err.Error())
 			respondWithError(w, NewBaseResponseError("Service unavailable"), http.StatusServiceUnavailable)
 			return
 		}
