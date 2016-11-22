@@ -23,6 +23,9 @@ class App extends Component {
           </div>
         </nav>
         <div className="container">
+          <div className="alert alert-info">
+            <strong>DISCLAIMER:</strong> Please use emails ending with <strong>shanab.me</strong> for the field "From Email". Sending from an email under a domain other than <strong>shanab.me</strong> will probably not work, and might also have a bad impact on <strong>shanab.me</strong>'s domain reputation.
+          </div>
           <EmailForm />
         </div>
       </div>
