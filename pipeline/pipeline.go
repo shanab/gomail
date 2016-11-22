@@ -81,11 +81,11 @@ func (w *worker) UpdateHealthStatus(workerName string, failures int) {
 		}
 	}
 
-	if w.isHealthy && w.consecUnhealthyChecks > config.UnhealthyThreshold {
+	if w.isHealthy && w.consecUnhealthyChecks >= config.UnhealthyThreshold {
 		log.Printf("[INFO] Setting worker %s health status to UNHEALTHY", workerName)
 		w.isHealthy = false
 	}
-	if !w.isHealthy && w.consecHealthyChecks > config.HealthyThreshold {
+	if !w.isHealthy && w.consecHealthyChecks >= config.HealthyThreshold {
 		log.Printf("[INFO] Setting worker %s health status to HEALTHY", workerName)
 		w.isHealthy = true
 	}
