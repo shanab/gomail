@@ -96,7 +96,6 @@ type Pipeline struct {
 func Read() []*Message {
 	t := time.Now()
 	messages := make([]*Message, 0)
-	messagesC := make(chan *sqs.Message)
 	var wg sync.WaitGroup
 
 	for _, queueUrl := range config.QueueUrls {
@@ -121,18 +120,21 @@ func Read() []*Message {
 			messageCount = maxNumberOfMessagesPerQueue
 		}
 
+		messagesC := make(chan *sqs.Message)
 		readersCount := (messageCount / maxNumberOfMessagesPerReceive) + 1
 		log.Printf("[INFO] Using %d readers to receive messages from queue (%s)", readersCount, queueUrl)
 		for i := int64(0); i < readersCount; i++ {
 			wg.Add(1)
 			go read(queueUrl, messagesC, &wg)
 		}
+
+		go func() {
+			for message := range messagesC {
+				messages = append(messages, NewMessage(message, queueUrl))
+			}
+		}()
 		wg.Wait()
 		close(messagesC)
-
-		for message := range messagesC {
-			messages = append(messages, NewMessage(message, queueUrl))
-		}
 	}
 
 	took := time.Since(t)
