@@ -61,6 +61,8 @@ Gomail API exposes a single endpoint that forwards the email details to one of m
 
 #### Usage
 
+Note: You can find an example of the configuration file under `api/config.yaml.example`
+
 ``` shell
 ./api -config=/path/to/config.yaml            # defaults to ./config.yaml
 
@@ -112,7 +114,3 @@ This endpoint can return:
     }
 }
 ```
-
-#### API configuration file
-
-API uses a simple YAML config file to specify the port it should run on, the maximum body size, etc. You can find a sample config file under `api/config.yaml.example`.
