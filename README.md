@@ -123,7 +123,7 @@ This endpoint can return:
 
 Pipeline's design is similar to a load balancer, where it reads messages from all SQS queues, and splits them between the 2 workers based on each worker's health status. This is how it works:
 
-1. Each n seconds (configurable) pipeline loops over all SQS queues to get an estimate of the number of available messages for each queue.
+1. Pipeline loops over all SQS queues to get an estimate of the number of available messages for each queue.
 2. Since SQS only allows a maximum of 10 messages per receive request, pipeline divides the number of messages in each queue by 10 to get an estimate of the number of readers it needs to potentially receive all messages on the queue at this point in time.
 3. It runs all readers concurrently - where each reader tries to receive 10 messages from the queue.
 4. Once all readers are done, all results are aggregated into a single slice that is going to be split between the 2 workers (SES worker & Sendgrid worker).
