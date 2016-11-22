@@ -13,12 +13,17 @@ type Config struct {
 	MinimumIterationDurationMilliseconds int64    `yaml:"minimum_iteration_duration_milliseconds"`
 	HealthyThreshold                     int      `yaml:"healthy_threshold"`
 	UnhealthyThreshold                   int      `yaml:"unhealthy_threshold"`
+	SendgridApiKey                       string   `yaml:"sendgrid_api_key"`
 	QueueUrls                            []string `yaml:"queue_urls"`
 }
 
 func (c Config) validate() error {
 	if c.AwsRegion == "" {
 		return fmt.Errorf("aws_region is missing")
+	}
+
+	if c.SendgridApiKey == "" {
+		return fmt.Errorf("sendgrid_api_key is missing")
 	}
 
 	if len(c.QueueUrls) == 0 {

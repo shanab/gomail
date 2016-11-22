@@ -2,7 +2,6 @@ package main
 
 import (
 	"log"
-	"os"
 
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
@@ -13,14 +12,6 @@ const (
 	sendgridUrl      = "https://api.sendgrid.com"
 	sendgridMethod   = "POST"
 )
-
-var (
-	sendgridApiKey string
-)
-
-func init() {
-	sendgridApiKey = os.Getenv("SENDGRID_API_KEY")
-}
 
 type SendgridWorker struct {
 	*worker
@@ -60,7 +51,7 @@ func (w *SendgridWorker) send(message *Message, status chan<- bool) {
 	content := mail.NewContent("text/plain", email.Body)
 	m := mail.NewV3MailInit(from, email.Subject, to, content)
 
-	request := sendgrid.GetRequest(sendgridApiKey, sendgridEndpoint, sendgridUrl)
+	request := sendgrid.GetRequest(config.SendgridApiKey, sendgridEndpoint, sendgridUrl)
 	request.Method = sendgridMethod
 	request.Body = mail.GetRequestBody(m)
 	_, err = sendgrid.API(request)
