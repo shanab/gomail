@@ -94,6 +94,7 @@ type Pipeline struct {
 }
 
 func Read() []*Message {
+	t := time.Now()
 	messages := make([]*Message, 0)
 	messagesC := make(chan *sqs.Message)
 	var wg sync.WaitGroup
@@ -120,19 +121,22 @@ func Read() []*Message {
 			messageCount = maxNumberOfMessagesPerQueue
 		}
 
-		readersCount := messageCount / maxNumberOfMessagesPerReceive
+		readersCount := (messageCount / maxNumberOfMessagesPerReceive) + 1
+		log.Printf("[INFO] Using %d readers to receive messages from queue (%s)", readersCount, queueUrl)
 		for i := int64(0); i < readersCount; i++ {
 			wg.Add(1)
 			go read(queueUrl, messagesC, &wg)
 		}
 		wg.Wait()
+		close(messagesC)
 
 		for message := range messagesC {
 			messages = append(messages, NewMessage(message, queueUrl))
 		}
 	}
 
-	log.Printf("[INFO] Number of messages read: %d", len(messages))
+	took := time.Since(t)
+	log.Printf("[INFO] Took %v to read %d messages", took, len(messages))
 	return messages
 }
 
@@ -177,7 +181,7 @@ func (p *Pipeline) Run() error {
 		took := time.Since(t)
 		log.Printf("[INFO] Pipeline iteration took %v to execute", took)
 		if took < minIterDuration {
-			sleepDuration := took - minIterDuration
+			sleepDuration := minIterDuration - took
 			log.Printf("[INFO] Pipeline sleeping for %v", sleepDuration)
 			time.Sleep(sleepDuration)
 		}
