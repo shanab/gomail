@@ -66,7 +66,7 @@ class EmailForm extends Component {
             <input type="text" className="form-control" name="subject" id="subject" value={this.state.subject} onChange={this.handleChange} />
           </FieldWithErrors>
           <FieldWithErrors errors={errors} id="body" label="Body">
-            <textarea name="body" id="body" rows="15" className="form-control"></textarea>
+            <textarea name="body" id="body" rows="15" className="form-control" value={this.state.body} onChange={this.handleChange}></textarea>
           </FieldWithErrors>
           <div className="form-group">
             <div className="col-sm-offset-2 col-sm-10">
