@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"net/http"
 
 	"github.com/sendgrid/sendgrid-go"
 	"github.com/sendgrid/sendgrid-go/helpers/mail"
@@ -54,9 +55,15 @@ func (w *SendgridWorker) send(message *Message, status chan<- bool) {
 	request := sendgrid.GetRequest(config.SendgridApiKey, sendgridEndpoint, sendgridUrl)
 	request.Method = sendgridMethod
 	request.Body = mail.GetRequestBody(m)
-	_, err = sendgrid.API(request)
-	if err != nil {
-		log.Print("[ERROR] Sendgrid: Could not send email: ", err.Error())
+	resp, err := sendgrid.API(request)
+	if err != nil || resp.StatusCode != http.StatusAccepted {
+		log.Printf(
+			"[ERROR] Sendgrid: Could not send email: status code=%v, body=%v, headers=%v, err=%v",
+			resp.StatusCode,
+			resp.Body,
+			resp.Headers,
+			err,
+		)
 		returnToQueue(message)
 		status <- false
 		return
