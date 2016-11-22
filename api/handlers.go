@@ -59,6 +59,9 @@ func (e Email) Validate() (bool, *ResponseError) {
 	if valid, errorMsg := validateEmail("To email", e.ToEmail); !valid {
 		errors["toEmail"] = errorMsg
 	}
+	if e.Body == "" {
+		errors["body"] = "Body is required"
+	}
 
 	if len(errors) > 0 {
 		return false, NewResponseError(errors)

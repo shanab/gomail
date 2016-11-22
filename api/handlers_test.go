@@ -95,6 +95,13 @@ func (s *ApiSuite) TestSendEmail() {
 			ExpectedStatusCode: http.StatusUnprocessableEntity,
 			ExpectedResponse:   `{"errors":{"toEmail":"To email is required"}}`,
 		},
+		{
+			Case:               "Missing email body",
+			Body:               `{"email":{"fromEmail":"from@example.com","fromName":"From Name","toEmail":"to@example.com","toName":"To Name","subject":"Test subject","body":""}}`,
+			ConfigMaxBodySize:  standardBodySize,
+			ExpectedStatusCode: http.StatusUnprocessableEntity,
+			ExpectedResponse:   `{"errors":{"body":"Body is required"}}`,
+		},
 	}
 
 	for _, testCase := range testCases {
