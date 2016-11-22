@@ -17,6 +17,10 @@ const (
 	maxNumberOfMessagesPerQueue   = 120000
 )
 
+type MessageBody struct {
+	Email *Email `json:"email"`
+}
+
 type Email struct {
 	FromEmail string `json:"fromEmail"`
 	FromName  string `json:"fromName"`
@@ -166,14 +170,14 @@ func read(queueUrl string, messagesC chan<- *sqs.Message, wg *sync.WaitGroup) {
 }
 
 func messageToEmail(message *sqs.Message) (*Email, error) {
-	var email Email
+	var messageBody MessageBody
 	body := []byte(*message.Body)
-	if err := json.Unmarshal(body, &email); err != nil {
+	if err := json.Unmarshal(body, &messageBody); err != nil {
 		log.Print("[ERROR] Could not convert SQS message body to email: ", err.Error())
 		return nil, err
 	}
 
-	return &email, nil
+	return messageBody.Email, nil
 }
 
 func (p *Pipeline) Run() error {
