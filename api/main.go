@@ -27,11 +27,6 @@ var (
 	config         *Config
 )
 
-func fatal(v ...interface{}) {
-	log.Fatal(v)
-	os.Exit(1)
-}
-
 func parseFlags() {
 	flag.StringVar(&configFilePath, "config", configFilePath, "path to config file (defaults to ./config.yaml)")
 	flag.Parse()
@@ -45,7 +40,7 @@ func main() {
 	var err error
 	config, err = NewConfig(configFilePath)
 	if err != nil {
-		fatal("Could not initialize config:", err)
+		log.Fatal("Could not initialize config: ", err.Error())
 	}
 
 	// initialize sqs client
@@ -60,7 +55,7 @@ func main() {
 	// enable access logging
 	f, err := os.OpenFile(config.AccessLogFilePath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0666)
 	if err != nil {
-		fatal("Could not open access log file for writing:", err)
+		log.Fatal("Could not open access log file for writing: ", err.Error())
 	}
 	defer f.Close()
 	loggedRouter := handlers.LoggingHandler(f, router)
@@ -69,7 +64,7 @@ func main() {
 
 	l, err := net.Listen("tcp", ":"+strconv.Itoa(config.Port))
 	if err != nil {
-		fatal("Could not listen to port:", err)
+		log.Fatal("Could not listen to port: ", err.Error())
 	}
 
 	corsAllowedHeaders := []string{"Content-Type"}
@@ -102,7 +97,7 @@ func main() {
 	// close listener
 	err = l.Close()
 	if err != nil {
-		fatal("Could not close listener:", err)
+		log.Fatal("Could not close listener: ", err.Error())
 	}
 
 	// wait for listener to close

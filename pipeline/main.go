@@ -4,7 +4,6 @@ import (
 	"flag"
 	"log"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -23,11 +22,6 @@ var (
 	config         *Config
 )
 
-func fatal(v ...interface{}) {
-	log.Fatal(v)
-	os.Exit(1)
-}
-
 func parseFlags() {
 	flag.StringVar(&configFilePath, "config", configFilePath, "path to config file (defaults to ./config.yaml)")
 	flag.Parse()
@@ -41,7 +35,7 @@ func main() {
 	var err error
 	config, err = NewConfig(configFilePath)
 	if err != nil {
-		fatal("Could not initialize config:", err)
+		log.Fatal("Could not initialize config: ", err.Error())
 	}
 
 	// initialize sqs & ses clients
@@ -53,5 +47,8 @@ func main() {
 	sesClient = ses.New(awsSession)
 
 	pipeline := NewPipeline()
-	pipeline.Run()
+	log.Print("Starting pipeline!")
+	if err := pipeline.Run(); err != nil {
+		log.Fatal("[ERROR] Pipeline stopped: ", err.Error())
+	}
 }

@@ -56,7 +56,7 @@ type worker struct {
 	consecUnhealthyChecks int
 }
 
-func (w *worker) UpdateHealthStatus(failures int) {
+func (w *worker) UpdateHealthStatus(workerName string, failures int) {
 	if failures > 0 {
 		if w.isHealthy {
 			w.consecUnhealthyChecks++
@@ -72,9 +72,11 @@ func (w *worker) UpdateHealthStatus(failures int) {
 	}
 
 	if w.isHealthy && w.consecUnhealthyChecks > config.UnhealthyThreshold {
+		log.Printf("[INFO] Setting worker %s health status to UNHEALTHY", workerName)
 		w.isHealthy = false
 	}
 	if !w.isHealthy && w.consecHealthyChecks > config.HealthyThreshold {
+		log.Printf("[INFO] Setting worker %s health status to HEALTHY", workerName)
 		w.isHealthy = true
 	}
 }
@@ -130,6 +132,7 @@ func Read() []*Message {
 		}
 	}
 
+	log.Printf("[INFO] Number of messages read: %d", len(messages))
 	return messages
 }
 
@@ -154,6 +157,7 @@ func messageToEmail(message *sqs.Message) (*Email, error) {
 	var email Email
 	body := []byte(*message.Body)
 	if err := json.Unmarshal(body, &email); err != nil {
+		log.Print("[ERROR] Could not convert SQS message body to email: ", err.Error())
 		return nil, err
 	}
 
@@ -165,13 +169,17 @@ func (p *Pipeline) Run() error {
 	sesFailures := make(chan int)
 	for {
 		t := time.Now()
+		log.Print("[INFO] Reading messages from queue(s)")
 		messages := Read()
 		p.run(messages, sendgridFailures, sesFailures)
 
 		minIterDuration := time.Duration(config.MinimumIterationDurationMilliseconds) * time.Millisecond
 		took := time.Since(t)
+		log.Printf("[INFO] Pipeline iteration took %v to execute", took)
 		if took < minIterDuration {
-			time.Sleep(took - minIterDuration)
+			sleepDuration := took - minIterDuration
+			log.Printf("[INFO] Pipeline sleeping for %v", sleepDuration)
+			time.Sleep(sleepDuration)
 		}
 	}
 
@@ -190,10 +198,12 @@ func (p *Pipeline) run(messages []*Message, sendgridFailures, sesFailures chan i
 	runningWorkers := 0
 
 	if len(sendgridMessages) > 0 {
+		log.Printf("[INFO] Sendgrid dispatched with %d messages", len(sendgridMessages))
 		runningWorkers++
 		go p.SendgridWorker.Send(sendgridMessages, sendgridFailures)
 	}
 	if len(sesMessages) > 0 {
+		log.Printf("[INFO] SES dispatched with %d messages", len(sesMessages))
 		runningWorkers++
 		go p.SESWorker.Send(sesMessages, sesFailures)
 	}
@@ -201,15 +211,17 @@ func (p *Pipeline) run(messages []*Message, sendgridFailures, sesFailures chan i
 	for i := 0; i < runningWorkers; i++ {
 		select {
 		case failures := <-sendgridFailures:
-			p.SendgridWorker.UpdateHealthStatus(failures)
+			log.Printf("[INFO] Sendgrid finished with %d failures", failures)
+			p.SendgridWorker.UpdateHealthStatus("Sendgrid", failures)
 		case failures := <-sesFailures:
-			p.SESWorker.UpdateHealthStatus(failures)
+			log.Printf("[INFO] SES finished with %d failures", failures)
+			p.SESWorker.UpdateHealthStatus("SES", failures)
 		}
 	}
 }
 
 func (p *Pipeline) calculateSplitPoint(size int) int {
-	// when only 1 message needs to be sent, prioritize healthy worker - if any
+	// when only 1 message needs to be sent, prioritize a healthy worker - if any
 	if size == 1 {
 		if p.SendgridWorker.isHealthy {
 			return 0
@@ -222,9 +234,9 @@ func (p *Pipeline) calculateSplitPoint(size int) int {
 	case p.SendgridWorker.isHealthy && p.SESWorker.isHealthy ||
 		!p.SendgridWorker.isHealthy && !p.SESWorker.isHealthy:
 		return size / 2
-	case p.SendgridWorker.isHealthy:
+	case p.SendgridWorker.isHealthy: // Sendgrid healthy but SES not healthy
 		return 1
-	default: // p.SESWorker.isHealthy
+	default: // SES healthy but Sendgrid not healthy
 		return size - 1
 	}
 }
