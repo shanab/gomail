@@ -131,6 +131,7 @@ func Read() []*Message {
 		}
 
 		messagesC := make(chan *sqs.Message)
+		doneReading := make(chan struct{})
 		readersCount := (messageCount / maxNumberOfMessagesPerReceive) + 1
 		log.Printf("[INFO] Using %d readers to receive messages from queue (%s)", readersCount, queueUrl)
 		for i := int64(0); i < readersCount; i++ {
@@ -139,12 +140,18 @@ func Read() []*Message {
 		}
 
 		go func() {
-			for message := range messagesC {
+			for {
+				message, ok := <-messagesC
+				if !ok {
+					doneReading <- struct{}{}
+					return
+				}
 				messages = append(messages, NewMessage(message, queueUrl))
 			}
 		}()
 		wg.Wait()
 		close(messagesC)
+		<-doneReading
 	}
 
 	took := time.Since(t)
