@@ -59,6 +59,15 @@ The web client is a static Javascript client developed using [React](https://fac
 
 Gomail API exposes a single endpoint that forwards the email details to one of multiple [Amazon SQS](https://aws.amazon.com/sqs/) queues for later processing.
 
+#### Usage
+
+``` shell
+./api -config=/path/to/config.yaml            # defaults to ./config.yaml
+
+```
+
+#### Endpoints
+
 * `POST /email/send`.
 
 **Required parameters**: `fromEmail` as the sender email, `toEmail` as the receiver email, and `body` as the content of the email.
@@ -102,13 +111,6 @@ This endpoint can return:
         "body": "Body is required",
     }
 }
-```
-
-#### API Usage
-
-``` shell
-./api -config=/path/to/config.yaml            # defaults to ./config.yaml
-
 ```
 
 #### API configuration file
