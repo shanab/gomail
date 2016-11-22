@@ -27,10 +27,16 @@ type Email struct {
 }
 
 func (e Email) From() string {
+	if e.FromName == "" {
+		return e.FromEmail
+	}
 	return fmt.Sprintf("%s <%s>", e.FromName, e.FromEmail)
 }
 
 func (e Email) To() string {
+	if e.ToName == "" {
+		return e.ToEmail
+	}
 	return fmt.Sprintf("%s <%s>", e.ToName, e.ToEmail)
 }
 

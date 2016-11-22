@@ -47,7 +47,7 @@ func (w *SendgridWorker) Send(messages []*Message, failures chan<- int) {
 func (w *SendgridWorker) send(message *Message, status chan<- bool) {
 	email, err := messageToEmail(message.Message)
 	if err != nil {
-		log.Print("[ERROR] Could not convert sqs message to email: %v", err.Error())
+		log.Print("[ERROR] Could not convert sqs message to email: ", err.Error())
 		deleteFromQueue(message)
 		status <- true
 		// TODO push message to dead letter queue
@@ -65,7 +65,7 @@ func (w *SendgridWorker) send(message *Message, status chan<- bool) {
 	request.Body = mail.GetRequestBody(m)
 	_, err = sendgrid.API(request)
 	if err != nil {
-		log.Print("[ERROR] Sendgrid: Could not send email: %v", err.Error())
+		log.Print("[ERROR] Sendgrid: Could not send email: ", err.Error())
 		returnToQueue(message)
 		status <- false
 		return

@@ -32,7 +32,7 @@ func (w *SESWorker) Send(messages []*Message, failures chan<- int) {
 func (w *SESWorker) send(message *Message, status chan<- bool) {
 	email, err := messageToEmail(message.Message)
 	if err != nil {
-		log.Print("[ERROR] Could not convert sqs message to email: %v", err.Error())
+		log.Print("[ERROR] Could not convert sqs message to email: ", err.Error())
 		deleteFromQueue(message)
 		status <- true
 		// TODO push message to dead letter queue
@@ -53,7 +53,7 @@ func (w *SESWorker) send(message *Message, status chan<- bool) {
 		},
 	})
 	if err != nil {
-		log.Print("[ERROR] SES: Could not send email: %v", err.Error())
+		log.Print("[ERROR] SES: Could not send email: ", err.Error())
 		returnToQueue(message)
 		status <- false
 		return
