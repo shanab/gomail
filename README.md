@@ -146,7 +146,7 @@ Pipeline's design is similar to a load balancer, where it reads messages from al
 
 * **Scalable**: Gomail can very easily scale up by introducing more API nodes to serve more requests, adding more SQS queues to increase the allowed number of inflight messages or adding more pipeline nodes to increase throughput of email dispatch and reduce delivery time.
 * **Fault-tolerant**: Once pipeline detects that a worker is not running properly, it flags this worker as unhealthy and immediately throttles down the amount of work this worker does to a bare minimum (0-1 message per iteration). This reduces the amount of damage an unhealthy worker can have on the delivery of emails.
-* **Reliable**: There is no obvious SPOF since all components are meant to work in clusters. In case an API node fails, other API nodes can still serve requests until a new node can replace the dead noe. Also in case a pipeline node fails, messages are automatically returned returned back to SQS queue after a certain period of time - configurable through SQS management dashboard.
+* **Reliable**: There is no obvious SPOF since all components are meant to work in clusters. In case an API node fails, other API nodes can still serve requests until a new node can replace the dead node. Also in case a pipeline node fails, messages are automatically returned back to SQS queue after a certain period of time - configurable through SQS management dashboard.
 
 ## Limitations
 
