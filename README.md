@@ -55,13 +55,15 @@ Gomail is composed of 3 separate components:
 
 The web client is a static Javascript client developed using [React](https://facebook.github.io/react/) & [Redux](http://redux.js.org/). Gomail web client's main responsibility is to submit emails from the web interface to the API. It is also responsible for displaying any errors the API sends back (e.g. validation errors or service unavailability errors).
 
+**Note**: Web client does not clear the email form after an email has been submitted. This is intentional to allow users to test sending multiple emails during a short time interval.
+
 ### Gomail API
 
 Gomail API exposes a single endpoint that forwards the email details to one of multiple [Amazon SQS](https://aws.amazon.com/sqs/) queues for later processing.
 
 #### Usage
 
-Note: You can find an example of the configuration file under `api/config.yaml.example`
+**Note**: You can find an example of the configuration file under `api/config.yaml.example`
 
 ``` shell
 ./api -config=/path/to/config.yaml            # defaults to ./config.yaml
@@ -133,7 +135,7 @@ Pipeline's design is similar to a load balancer, where it reads messages from al
 
 #### Usage
 
-Note: You can find an example of the configuration file under `pipeline/config.yaml.example`
+**Note**: You can find an example of the configuration file under `pipeline/config.yaml.example`
 
 ``` shell
 ./pipeline -config=/path/to/config.yaml            # defaults to ./config.yaml
